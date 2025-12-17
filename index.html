@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  background: #000;
+}
+
+/* IKLAN PLAY SHOPEE */
+#playShopee {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+#playShopee button {
+  padding: 18px 34px;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  background: #ee4d2d;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* WARNING DETIK 3 */
+#warning {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+#warning button {
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  background: #ff3d3d;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* CONTROLS */
+#controls {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  background: rgba(0,0,0,0.6);
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 5000;
+}
+
+#controls button {
+  background: #222;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#progress {
+  flex: 1;
+}
+
+#time {
+  color: #fff;
+  font-size: 14px;
+  white-space: nowrap;
+}
+</style>
+</head>
+
+<body>
+
+<video id="video" playsinline preload="metadata">
+  <source src="https://video.twimg.com/amplify_video/1999507976911224839/vid/avc1/606x1080/-2VP55Qwr3w0x5C_.mp4?tag=21" type="video/mp4">
+</video>
+
+<!-- IKLAN PLAY SHOPEE -->
+<div id="playShopee">
+  <button id="playBtn">▶ PLAY VIDEO</button>
+</div>
+
+<!-- WARNING DETIK 3 -->
+<div id="warning">
+  <button id="goBtn">Klik untuk lanjut</button>
+</div>
+
+<!-- CONTROLS -->
+<div id="controls">
+  <button id="back">⏪ 10s</button>
+  <input type="range" id="progress" min="0" value="0" step="0.1">
+  <button id="forward">10s ⏩</button>
+  <div id="time">00:00 / 00:00</div>
+</div>
+
+<script>
+const shopeeLink = "https://s.shopee.co.id/805esXbvVf";
+const directLink = "https://videyyco.github.io/videyynoiklan/";
+
+const video = document.getElementById("video");
+const playShopee = document.getElementById("playShopee");
+const playBtn = document.getElementById("playBtn");
+const warning = document.getElementById("warning");
+const goBtn = document.getElementById("goBtn");
+
+const progress = document.getElementById("progress");
+const time = document.getElementById("time");
+const back = document.getElementById("back");
+const forward = document.getElementById("forward");
+
+let triggered = false;
+
+/* PLAY SHOPEE */
+playBtn.addEventListener("click", () => {
+  window.open(shopeeLink, "_blank");
+  playShopee.style.display = "none";
+  video.play();
+});
+
+/* WARNING DETIK 3 */
+video.addEventListener("timeupdate", () => {
+  if (!triggered && video.currentTime >= 3) {
+    triggered = true;
+    video.pause();
+    warning.style.display = "flex";
+  }
+});
+
+/* DIRECT LINK */
+goBtn.addEventListener("click", () => {
+  window.open(directLink, "_blank");
+  warning.style.display = "none";
+  video.play();
+});
+
+/* FORMAT WAKTU */
+function formatTime(t) {
+  const m = Math.floor(t / 60);
+  const s = Math.floor(t % 60);
+  return `${m}:${s < 10 ? "0"+s : s}`;
+}
+
+/* UPDATE PROGRESS */
+video.addEventListener("timeupdate", () => {
+  progress.max = video.duration || 0;
+  progress.value = video.currentTime;
+  time.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration || 0)}`;
+});
+
+/* SEEK */
+progress.addEventListener("input", () => {
+  video.currentTime = progress.value;
+});
+
+/* MAJU & MUNDUR */
+back.onclick = () => video.currentTime -= 10;
+forward.onclick = () => video.currentTime += 10;
+</script>
+
+</body>
+</html>
